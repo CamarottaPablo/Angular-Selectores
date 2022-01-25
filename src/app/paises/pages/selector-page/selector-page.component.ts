@@ -5,6 +5,7 @@ import { switchMap, tap } from 'rxjs/operators';
 
 import { PaisesService } from '../../services/paises-service';
 import { PaisSmall } from '../../interfaces/paises.interface';
+import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 
 @Component({
   selector: 'app-selector-page',
@@ -23,6 +24,7 @@ export class SelectorPageComponent implements OnInit {
   // llenar selectores
   regiones: string[] = [];
   paises: PaisSmall[] = [];
+  fronteras: string[] = [];
 
   constructor( private fb: FormBuilder,
                private paisesService: PaisesService ) { }
@@ -43,9 +45,16 @@ export class SelectorPageComponent implements OnInit {
       });
 
       this.miFormulario.get('pais')?.valueChanges
-     
-      .subscribe( codigo => {
-        this.paises = codigo;
+      .pipe(
+        tap( () => {
+          this.fronteras = [];
+          this.miFormulario.get('frontera')?.reset('');
+        }),
+        switchMap( codigo => this.paisesService.getPaisPorCodigo( codigo ) )
+      )
+      .subscribe( pais => {
+        this.fronteras = pais?.borders || [];
+        
       })
 
   }

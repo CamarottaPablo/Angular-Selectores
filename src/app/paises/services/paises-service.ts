@@ -9,6 +9,7 @@ import { Observable, of } from 'rxjs';
 export class PaisesService {
 
   private _baseUrl: string = 'https://restcountries.com/v3.1/'
+  private _baseUrl2: string = 'https://restcountries.com/v2';
   private _regiones: string[] = ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania'];
 
   get regiones() {
@@ -31,7 +32,7 @@ export class PaisesService {
       return of(null)
     }
     
-    const url= `${ this._baseUrl }/alpha/${ codigo }`;
+    const url= `${ this._baseUrl2 }/alpha/${ codigo }`;
     return this.http.get<Pais>( url )
 
   }
